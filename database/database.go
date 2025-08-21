@@ -2,20 +2,25 @@ package database
 
 import (
 	"log"
+	"os"
 
-	"booking-bengkel-smkn1depok/models"
-	"github.com/glebarez/sqlite" // <- driver pure Go
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() {
-	db, err := gorm.Open(sqlite.Open("booking_bengkel.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Gagal koneksi database:", err)
+	// ambil path db dari .env
+	dbPath := os.Getenv("DATABASE_URL")
+	if dbPath == "" {
+		dbPath = "booking_bengkel.db" // fallback kalau gak ada
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Servis{}, &models.Teknisi{}, &models.Booking{})
-	DB = db
+	database, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Gagal konek database: ", err)
+	}
+
+	DB = database
 }
