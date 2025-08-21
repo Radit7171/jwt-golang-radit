@@ -6,12 +6,13 @@ import (
     "booking-bengkel-smkn1depok/routes"
     "github.com/gofiber/fiber/v2"
     "os"
+    "fmt"
 )
 
 func main() {
     app := fiber.New()
 
-    // koneksi database
+    // koneksi database (ambil dari env)
     database.ConnectDB()
 
     // migrasi tabel
@@ -25,5 +26,6 @@ func main() {
         port = "3000"
     }
 
-    app.Listen(":" + port)
+    fmt.Println("Server running on port", port)
+    app.Listen("0.0.0.0:" + port) // <- penting
 }
